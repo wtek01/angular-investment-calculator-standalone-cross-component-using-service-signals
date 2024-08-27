@@ -1,0 +1,85 @@
+@startuml Investment Calculator
+
+class InvestmentService {
+  +annualInvestmentResults: signal<InvestmentResult[] | undefined>
+  +onCalculateInvestmentResults(investmentInput: InvestmentInput): void
+}
+
+class AppComponent {
+}
+
+class UserInputComponent {
+  +investmentInput: signal<InvestmentInput>
+  +onSubmit(): void
+}
+
+class InvestmentResultsComponent {
+  +annualInvestmentResults: computed<InvestmentResult[] | undefined>
+}
+
+class HeaderComponent {
+}
+
+class InvestmentInput {
+  +initialInvestment: number
+  +annualInvestment: number
+  +expectedReturn: number
+  +duration: number
+}
+
+class InvestmentResult {
+  +year: number
+  +interest: number
+  +valueEndOfYear: number
+  +annualInvestment: number
+  +totalInterest: number
+  +totalAmountInvested: number
+}
+
+class "app.component.html" as AppComponentTemplate {
+  +app-header
+  +app-user-input
+  +app-investment-results
+}
+
+class "user-input.component.html" as UserInputComponentTemplate {
+  +form (ngSubmit)="onSubmit()"
+  +input [(ngModel)]="investmentInput().initialInvestment"
+  +input [(ngModel)]="investmentInput().annualInvestment"
+  +input [(ngModel)]="investmentInput().expectedReturn"
+  +input [(ngModel)]="investmentInput().duration"
+  +button type="submit"
+}
+
+class "investment-results.component.html" as InvestmentResultsComponentTemplate {
+  +@if (!annualInvestmentResults()) { "No investment results available." }
+  +table
+  +thead
+  +tbody *ngFor="let data of annualInvestmentResults()"
+  +td {{ data.year }}
+  +td {{ data.interest | currency : 'EUR' }}
+  +td {{ data.valueEndOfYear | currency : 'EUR' }}
+  +td {{ data.totalInterest | currency : 'EUR' }}
+  +td {{ data.totalAmountInvested | currency : 'EUR' }}
+}
+
+class "header.component.html" as HeaderComponentTemplate {
+  +header
+  +img src="investment-calculator-logo.png"
+  +h1 Investment Calculator
+}
+
+InvestmentService --> InvestmentInput : uses
+InvestmentService --> InvestmentResult : uses
+AppComponent --> AppComponentTemplate : uses template
+UserInputComponent --> UserInputComponentTemplate : uses template
+InvestmentResultsComponent --> InvestmentResultsComponentTemplate : uses template
+HeaderComponent --> HeaderComponentTemplate : uses template
+
+AppComponent --> HeaderComponent : imports
+AppComponent --> UserInputComponent : imports
+AppComponent --> InvestmentResultsComponent : imports
+UserInputComponent --> InvestmentService : uses
+InvestmentResultsComponent --> InvestmentService : uses
+
+@enduml

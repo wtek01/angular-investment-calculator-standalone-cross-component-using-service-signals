@@ -1,0 +1,26 @@
+@if (!annualInvestmentResults()) {
+<p class="center">No investment results available.</p>
+} @else {
+<table class="result">
+  <thead>
+    <tr>
+      <th>Year</th>
+      <th>Investment Value</th>
+      <th>Interest (Year)</th>
+      <th>Total Interest</th>
+      <th>Invested Capital</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (data of annualInvestmentResults(); track data.year) {
+    <tr>
+      <td>{{ data.year }}</td>
+      <td>{{ data.interest | currency : "EUR" }}</td>
+      <td>{{ data.valueEndOfYear | currency : "EUR" }}</td>
+      <td>{{ data.totalInterest | currency : "EUR" }}</td>
+      <td>{{ data.totalAmountInvested | currency : "EUR" }}</td>
+    </tr>
+    }
+  </tbody>
+</table>
+}
